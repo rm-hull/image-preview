@@ -1,6 +1,6 @@
 # Image Preview
 
-A first foray into **rust-lang**. Once build, the program takes in an image file, and
+A first foray into **rust-lang**. Once built, this program takes in an image file, and
 using ANSI escape sequences, outputs a low-fidelity preview of the image in the terminal.
 Inspired in part by the **asciiblock** emulator [here](https://github.com/rm-hull/luma.emulator).
 
