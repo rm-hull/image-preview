@@ -19,7 +19,11 @@ struct Cli {
         default_value = "lanczos3"
     )]
     filter_type: String,
-    #[structopt(long, short, help = "When supplied, limits the image with to the number of columns, else probes the terminal to determine the displayable width.")]
+    #[structopt(
+        long,
+        short,
+        help = "When supplied, limits the image with to the number of columns, else probes the terminal to determine the displayable width."
+    )]
     width: Option<u32>,
 }
 
@@ -33,18 +37,17 @@ fn main() {
     let (width, height) = image_preview::calc_size(&img, args.width).unwrap();
     let resized_img = img.resize(width, height, filter_type);
 
-    let pixel_renderer = if args.true_color {
-        image_preview::true_color
-    } else {
-        image_preview::indexed
+    let pixel_renderer = match args.true_color {
+        true => image_preview::true_color,
+        false => image_preview::indexed,
     };
     let mut buf = Vec::new();
     for y in (0..resized_img.height() - 1).step_by(2) {
         for x in 0..resized_img.width() {
-            buf.write(pixel_renderer(&resized_img, x, y).as_bytes())
+            buf.write_all(pixel_renderer(&resized_img, x, y).as_bytes())
                 .unwrap();
         }
-        buf.write(b"\x1b[m\n").unwrap();
+        buf.write_all(b"\x1b[m\n").unwrap();
     }
-    io::stdout().write(&buf).unwrap();
+    io::stdout().write_all(&buf).unwrap();
 }
